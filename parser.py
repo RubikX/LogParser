@@ -1,4 +1,5 @@
 # Parses log.txt and outputs useful information
+# Author: Edison Suen
 
 import operator
 from tabulate import tabulate
