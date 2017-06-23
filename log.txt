@@ -1,6 +1,6 @@
 17.352792 s       enters function TransferData()
 17.352793 s       enters function GetDataReady()
-17.352795 s		  exits from function GetDataReady()	
+17.352795 s		    exits from function GetDataReady()	
 17.352800 s       enters function SetupDMA()
 17.352820 s       enters function SetupDescriptor()
 17.352831 s       enters function WriteDescriptor()
