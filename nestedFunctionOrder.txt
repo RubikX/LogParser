@@ -1,0 +1,15 @@
+enter TransferData()
+	enter GetData()
+	exit GetData()
+	enter SetupDMA()
+		enter SetupDescriptor()
+			enter WriteDescriptor()
+			exit WriteDescriptor()
+			---debugging---
+			enter WriteDescriptor()
+			---warning---
+			exit WriteDescriptor()
+		exit SetupDescriptor()
+		---debugging---
+	exit SetupDMA()
+exit TransferData()
