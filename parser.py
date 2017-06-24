@@ -154,9 +154,9 @@ with open(LOGFILE) as f:
     print("\n")
     # for i in everything_arr:
     #    print(i)
-    print("\n")
-    print(tabulate(func_times_called, headers=['Function','Times-called']))
-    print("\n")
+    # print("\n")
+    # print(tabulate(func_times_called, headers=['Function','Times-called']))
+    # print("\n")
 
     # print(enter_times)
     # print("\n")
@@ -193,67 +193,60 @@ with open(LOGFILE) as f:
     #     print(i)
 
     ###############################
-
-    temp = [] # temp array storing the times for the calculation (inner enter time - outer enter time)
+    # temp array storing the times for the calculation (inner enter time - outer enter time)
     calculation = [] # list containing x_1, x_2, and x_2 - x_1
 
     # Populates the temp array with entry times (or temp = enter_times???)
-    for i in times_with_description:
-        if (i[0] in enter_times):
-            temp.append(i[0])
+    # for i in times_with_description:
+    #     if (i[0] in enter_times):
+    #         temp.append(i[0])
     
     # If not an empty list, then populate the calculation array with x_1, x_2, and x_2 - x_1
-    for i in range(len(temp)):
-        if (temp[i] != []):
-            try:
-                calculation.append([temp[i],temp[i+1], str(Decimal(temp[i+1]) - Decimal(temp[i]))])
-            except:
-                pass
-
-    # Removes all entries where the exit time of the i+1 element is the enter time of the ith element
-    for i in range(len(calculation)):
-        try:
-            if (calculation[i][1] == calculation[i+1][0]):
-                del calculation[i+1]
-        except:
-            pass
+    for i in range(len(all_times)):
+        if ((str(all_times[i]) in enter_times) and (str(all_times[i+1]) in enter_times)) or ((str(all_times[i]) in enter_times) and (str(all_times[i+1]) in exit_times)):
+            calculation.append([str(all_times[i]),str(all_times[i+1]),str(Decimal(all_times[i+1]) - Decimal(all_times[i]))])
 
     ###############################
 
-    temp = debug_times + warning_times
     calculation2 = []
 
-    # Populates the temp array with exit times (or temp = exit_times??)
-    for i in range(len(times_with_description)):
-        if ((times_with_description[i][0] in exit_times) and (len(times_with_description[i]) > 1)):
-            temp.append(times_with_description[i][0])
-
-    temp.sort()
-    # print(temp)
-
-    for i, e in reversed(list(enumerate(temp))):
-        print(i, e)
+    for i, e in reversed(list(enumerate(all_times))):
+        # print(i, e)
         try:
-            if ((temp[i-2] in warning_times) or (temp[i-2] in debug_times)):
-                calculation2.append([temp[i],temp[i-1],temp[i-2], str((Decimal(temp[i]) - Decimal(temp[i-2])) + (Decimal(temp[i]) - Decimal(temp[i-1])))])
-            else:
-                calculation2.append([temp[i],temp[i-1], str(Decimal(temp[i]) - Decimal(temp[i-1]))])
+             # If the i-2nd element is a debug time, then perform ((i-(i-1th)) + (i-(i-2nd)))
+            if (str(all_times[i-2]) in debug_times):
+                calculation2.append([str(all_times[i]),str(all_times[i-1]),str(all_times[i-2]), str((Decimal(all_times[i]) - Decimal(all_times[i-2])) + (Decimal(all_times[i]) - Decimal(all_times[i-1])))])
+            
+            # If the i-2nd element is a warning time, then perform i-(i-2nd) and skip the i-1st
+            elif (str(all_times[i-2]) in warning_times):
+                calculation2.append([str(all_times[i]),str(all_times[i-1]),str(all_times[i-1]),str(Decimal(all_times[i]) - Decimal(all_times[i-2]))])
+            
+            # If the i-1th element is a warning or debug time, then perform i-(i-2nd) and skip the i-1th element
+            elif ((str(all_times[i-1]) in warning_times) or (str(all_times[i-1]) in debug_times)):
+                calculation2.append([str(all_times[i]),str(all_times[i-1]),str(all_times[i-2]), str((Decimal(all_times[i]) - Decimal(all_times[i-2])))])
+            
+            # If the ith and i+1th elements are both exit times, then perform i-(i-1th)
+            elif (((str(all_times[i]) in exit_times)) and ((str(all_times[i-1]) in exit_times))):
+                calculation2.append([str(all_times[i]),str(all_times[i-1]), str(Decimal(all_times[i]) - Decimal(all_times[i-1]))])
         except:
             pass
 
-    for i in range(len(calculation2)):
-        try:
-            if (calculation2[i][1] == calculation2[i+1][0]):
-                del calculation2[i+1]
-        except:
-            pass
+    #print("\n")
+    for i, e in enumerate(calculation2):
+        if ((calculation2[i][0] in enter_times) or (calculation2[i][0] in debug_times) or (calculation2[i][0] in warning_times)):
+            del calculation2[i]
+
+    if len(calculation2) == len(calculation):
+        del calculation2[-1]
+    
 
     print(calculation)
-    # print("\n")
     print("\n")
     print(calculation2)
+    print("\n")
+    #print(everything_arr)
 
-
-
-
- 
+    # for i in range(len(everything_arr)):
+    #     for j in range(len(calculation)):
+    #         if calculation[j][0] == everything_arr[i][0]:
+    #             print(everything_arr[i][3])
